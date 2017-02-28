@@ -19,9 +19,9 @@ class BlogHandler(webapp2.RequestHandler):
             Get all posts by a specific user, ordered by creation date (descending).
             The user parameter will be a User object.
         """
-
-        # TODO - filter the query so that only posts by the given user
-        return None
+        user_id = user.key()
+        query = Post.all().filter('author', user_id)
+        return query.fetch(limit=limit, offset=offset)
 
     def get_user_by_name(self, username):
         """ Get a user object from the db, based on their username """
@@ -265,6 +265,7 @@ class LoginHandler(BlogHandler):
         t = jinja_env.get_template("login.html")
         response = t.render(error=error)
         self.response.out.write(response)
+
 
     def get(self):
         self.render_login_form()
